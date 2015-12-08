@@ -10,14 +10,14 @@ namespace IT_project.Controllers
     {
         public ActionResult Index()
         {
-            ViewBag.Message = "Modify this template to jump-start your ASP.NET MVC application.";
+            ViewBag.Message = "Make reservation for good vacation in Ohrid.";
 
             return View();
         }
 
-        public ActionResult About()
+        public ActionResult Accommodations()
         {
-            ViewBag.Message = "Your app description page.";
+            ViewBag.Message = "Accomodations/Reservations";
 
             return View();
         }
@@ -25,6 +25,21 @@ namespace IT_project.Controllers
         public ActionResult Contact()
         {
             ViewBag.Message = "Your contact page.";
+
+            return View();
+        }
+
+        public ActionResult ApartmentsView()
+        {
+            ViewBag.ApiUri = "/api/apartments/" + Request.QueryString["apartmentid"]; 
+            return View();
+        }
+
+        //[Authorize(Roles = "Administrator")]
+        public ActionResult Admin()
+        {
+            string apiUri = Url.RouteUrl("DefaultApi", new { controller = "admin", });
+            ViewBag.ApiUrl = "/api/admin";
 
             return View();
         }

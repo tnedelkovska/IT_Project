@@ -1,0 +1,84 @@
+﻿
+@{
+    ViewBag.Title = "ApartmentsView";
+}
+
+<div id="spinner">
+    Loading...
+</div>
+
+
+
+<div style="width:100%;background-color:#004f83;margin-bottom:2em;padding:1em" class="float-left">
+    <h1 data-bind="text : name" class="float-left"></h1>
+    <button class="float-right" onclick="goBack()">Go Back</button>
+</div>
+
+<article class="content-wrapper float-left">
+    <img class="float-left" data-bind="attr : {src : imageUrl}" style="width:15em;height:15em;" />
+    <p id="apartment_descr" class="float-left" data-bind="text : description"></p>
+</article>
+
+<aside class="float-right">
+    <h3>User Rating:</h3>
+    <h4 data-bind="text : rating"></h4>
+    <br/>
+    <h3>Number of rooms</h3>
+    <h4 data-bind="text : rooms"></h4>
+</aside>
+
+
+
+@section Scripts {
+    <script type="text/javascript" src="@Url.Content("~/Scripts/knockout-2.2.0.js")"></script>
+    <script type="text/javascript">
+
+        function goBack() {
+            window.history.back();
+        }
+            
+        var spinnerVisible = false;
+        function showProgress() {
+            if (!spinnerVisible) {
+                $("div#spinner").fadeIn("fast");
+                spinnerVisible = true;
+            }
+        };
+        function hideProgress() {
+            if (spinnerVisible) {
+                var spinner = $("div#spinner");
+                spinner.stop();
+                spinner.fadeOut("fast");
+                spinnerVisible = false;
+            }
+        };
+
+
+
+        function ApartmentViewModel() {
+            var self = this;
+            self.id = ko.observable();
+            self.name = ko.observable();
+            self.imageUrl = ko.observable();
+            self.description = ko.observable();
+            self.rating = ko.observable();
+            self.rooms = ko.observable();
+
+            showProgress();
+            $.getJSON('@ViewBag.ApiUri', function (data) {
+                self.id(data.Id);
+                self.name(data.Name);
+                self.imageUrl(data.ImageUrl);
+                self.description(data.Description);
+                self.rating(data.Rating);
+                self.rooms(data.Rooms);
+                hideProgress();
+            });
+        }
+
+         $(document).ready(function () {
+             ko.applyBindings(new ApartmentViewModel());
+             
+        });
+   </script>
+}

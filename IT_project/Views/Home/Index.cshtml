@@ -1,34 +1,138 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿
+@{
+    ViewBag.Title = "Welcome..";
 }
-@section featured {
-    <section class="featured">
-        <div class="content-wrapper">
-            <hgroup class="title">
-                <h1>@ViewBag.Title.</h1>
-                <h2>@ViewBag.Message</h2>
-            </hgroup>
+
+
+    <div id="spinner">
+        Loading...
+    </div>
+
+    <div style="width:100%;background-color:#004f83;margin-bottom:2em;padding:1em" class="float-left">
+        <h1>Facts about Ohrid</h1>
+    </div>
+
+
+    <article class="float-left">
+
+    <div>
+
+        <h2>Facts about Ohrid</h2>
+        <p style="color:white;font-size:1.25em"><a href="https://en.wikipedia.org/wiki/Ohrid">Ohrid </a>is a city in the Republic of Macedonia and the seat of Ohrid Municipality. It is the largest city on Lake Ohrid and the eighth-largest city in the country with over 42,000 inhabitants as of 2002. Ohrid is notable for once having had 365 churches, one for each day of the year, and has been referred to as a "Jerusalem (of the Balkans)".The city is rich in picturesque houses and monuments, and tourism is predominant. It is located southwest of Skopje, west of Resen and Bitola. In 1979 and in 1980, Ohrid and Lake Ohrid were accepted as Cultural and Natural World Heritage Sites by UNESCO. In fact, Ohrid is one of only 28 sites that are part of UNESCO's World Heritage that are both Cultural and Natural sites.</p>
+    </div>
+
+    <div>
+        <div class="latest_properties">
+            <h2>Avalaible Apartments</h2>
+            <ul class="img_list" data-bind="foreach: apartments">
+                <li>
+                    <a data-bind="attr: { 'href': '@Url.Action("ApartmentsView", "Home")/aspx?apartmentId='+Id }">
+                        <img data-bind="attr : {src : ImageUrl,alt : Name}" width="110" height="80"/>
+                        <p data-bind="text : Name"></p>
+                    </a>
+
+                </li>
+
+            </ul>
+
+
+            <div class="cleaner"></div>
         </div>
-    </section>
+    </div>
+</article> <!-- end of main column -->
+
+
+    <aside class="news_box float-right">
+
+        <h2>Points of interest</h2>
+        <div class="news_section">
+            <h3>Church of St. John at Kaneo</h3>
+            <img class="image_wrapper fl_image" src="../../Images/kaneo.png" alt="image" />
+            <p style="font-size:15px">Saint John the Theologian, Kaneo or simply Saint John at Kaneo is a Macedonian Orthodox church situated on the cliff over Kaneo Beach overlooking Lake Ohrid in the city of Ohrid, Republic of Macedonia. </p>
+            <a href="https://en.wikipedia.org/wiki/Church_of_St._John_at_Kaneo">Read more</a>
+            <div class="cleaner"></div>
+        </div>
+
+        <div class="news_section">
+            <h3>Plaošnik</h3>
+            <img class="image_wrapper fl_image" src="../../Images/plaosnik.png" alt="image" />
+            <p style="font-size:15px">Plaošnik or simply Plaoš is an archaeological site and holy place in Ohrid, 250 meters below Samuil's Fortress. In the future, the whole complex will have konaks as in the time of Saint Clement of Ohrid, together with several surrounding objects.</p>
+            <a href="https://en.wikipedia.org/wiki/Plao%C5%A1nik">Read more</a>
+
+            <div class="cleaner"></div>
+        </div>
+
+        <div class="news_section">
+            <h3>Samuil's Fortress</h3>
+            <img class="image_wrapper fl_image" src="../../Images/samoilovi.png" alt="image" />
+            <p style="font-size:15px">Samuel's Fortress is a fortress in the old town of Ohrid, Republic of Macedonia. It was the capital of the First Bulgarian Empire during the rule of Tsar Samuel at the turn of the 10th century. </p>
+            <a href="https://en.wikipedia.org/wiki/Samuel%27s_Fortress,_Ohrid">Read more</a>
+
+            <div class="cleaner"></div>
+        </div>
+
+        <a href="#"><strong>View All Posts</strong></a>
+
+    </aside>
+
+   
+
+   
+
+    <div class="cleaner"></div>
+<div class="section_w290">
+    <div class="find_agent"><a href="http://www.ohridnews.com/"><img src="../../Images/OhridNews.png" alt="find an agent" width="290" height="155" /></a></div>
+</div>
+
+
+
+@section Scripts {
+    <script type="text/javascript" src="@Url.Content("~/Scripts/knockout-2.2.0.js")"></script>
+    <script type="text/javascript">
+
+        var spinnerVisible = false;
+        function showProgress() {
+            if (!spinnerVisible) {
+                $("div#spinner").fadeIn("fast");
+                spinnerVisible = true;
+            }
+        };
+        function hideProgress() {
+            if (spinnerVisible) {
+                var spinner = $("div#spinner");
+                spinner.stop();
+                spinner.fadeOut("fast");
+                spinnerVisible = false;
+            }
+        };
+
+        function AppViewModel() {
+            var self = this;
+            self.loggedIn = @(Request.IsAuthenticated ? "true" : "false");
+            self.apartments = ko.observableArray();
+
+            function ApartmentViewModel(root, apartment) {
+                var self = this;
+                self.Id = apartment.Id;
+                self.Name = apartment.Name;
+                self.Description = apartment.Description;
+                self.Rating = apartment.Rating;
+                self.ImageUrl = apartment.ImageUrl;
+            }
+
+            showProgress();
+            $.getJSON("/api/apartments", function (apartments) {
+                $.each(apartments, function (index, apartment) {
+                    self.apartments.push(new ApartmentViewModel(self, apartment));
+                })
+                hideProgress();
+            });
+
+        }
+        
+        $(document).ready(function () {
+            ko.applyBindings(new AppViewModel());
+        });
+        
+    </script>
 }
-<h3>We suggest the following:</h3>
-
-@if (Request.IsAuthenticated && User.IsInRole("Administrators"))
-{
-    //TODO EDIT LIST OF APARMENTS AND ADDING APARTMENTS 
-    
-}
-
-@if (Request.IsAuthenticated && !User.IsInRole("Administrators"))
-{
-    //TODO LIST OF APARTMENTS 
-    <h3>Hello</h3>
-}
-
-@if (!Request.IsAuthenticated)
-{
-    //TODO HOME PAGE
-}
-
-
-

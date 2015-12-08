@@ -15,20 +15,18 @@ body {
 }
 
 a {
-    color: #333;
     outline: none;
-    padding-left: 3px;
-    padding-right: 3px;
-    text-decoration: underline;
+    text-decoration:none;
 }
 
     a:link, a:visited,
     a:active, a:hover {
-        color: #333;
+        color: #000;
+        text-decoration:none;
     }
 
     a:hover {
-        background-color: #c7d1d6;
+        background-color: #9fa089;
     }
 
 header, footer, hgroup,
@@ -60,11 +58,15 @@ mark {
 
 h1, h2, h3,
 h4, h5, h6 {
-    color: #000;
-    margin-bottom: 0;
-    padding-bottom: 0;
+    color: #fefefe;
+    margin: 0;
+    padding: 0;
 }
 
+p {
+    color:black;
+    font-size: 1em;
+}
 h1 {
     font-size: 2em;
 }
@@ -95,7 +97,7 @@ h5, h6 {
 ----------------------------------------------------------*/
 .content-wrapper {
     margin: 0 auto;
-    max-width: 960px;
+    padding:2em;
 }
 
 #body {
@@ -105,13 +107,11 @@ h5, h6 {
 }
 
     .main-content {
-        background: url("../Images/accent.png") no-repeat;
         padding-left: 10px;
         padding-top: 30px;
     }
 
     .featured + .main-content {
-        background: url("../Images/heroAccent.png") no-repeat;
     }
 
 header .content-wrapper {
@@ -320,7 +320,6 @@ aside {
     }
 
         aside ul li {
-            background: url("../Images/bullet.png") no-repeat 0 50%;
             padding: 2px 0 2px 20px;
         }
 
@@ -748,9 +747,50 @@ tr.pager td {
         text-align: center;
         height: auto;
         padding: 10px 0;
+        position: static;
+
     }
 
         footer p {
             margin: 0;
         }
+}
+
+.apartment_box{
+    background-color:aqua;
+    list-style:none;
+    margin: 1em 0 1em 0;
+    padding: 2em;
+    background-color:#004d80;
+    color:white;
+}
+
+#img_list ul li p{
+    color:white;
+}
+
+div#spinner
+{
+    display: none;
+    width:100px;
+    height: 100px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    background:url(../Images/squares.gif) no-repeat center #fff;
+    background-color:none;
+    text-align:center;
+    padding:10px;
+    color:transparent;
+    margin-left: -50px;
+    margin-top: -50px;
+    z-index:2;
+    overflow: auto;
+}
+
+#apartment_descr{
+    color:white;
+    font-size:1.5em;
+    padding:0 2em;
+    width:60%;
 }

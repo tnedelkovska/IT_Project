@@ -1,0 +1,173 @@
+﻿@{
+    ViewBag.Title = "Accommodations";
+}
+
+
+
+<div style="width:100%;background-color:#004f83;margin-bottom:2em;padding:1em" class="float-left">
+    <h1 class="float-left">Accommodations</h1>
+    <button class="float-right" onclick="goBack()">Go Back</button>
+</div>
+
+    <!-- List of products -->
+<article class="float-left" style="background:#0076a3">
+    <ul class="img_list" data-bind="foreach: apartments" style="list-style:none">
+        <li>
+            <a data-bind="attr: { 'href': '@Url.Action("ApartmentsView", "Home")/aspx?apartmentId='+ApartmentId  }">
+                <img data-bind="attr : {src : ImageUrl,alt : Name}" width="110" height="80" />
+                <p data-bind="text : Name"></p>
+            </a>
+            <div data-bind="if: $parent.loggedIn">
+                <button data-bind="click: addReservation">Make a Reservation</button>
+            </div>
+        </li>
+
+    </ul>
+
+
+</article>
+
+<!-- Cart -->
+<aside id="cart" class="float-right" style="background-color:#004f83;padding:2em">
+    <h1>Your reservation for</h1>
+    <h2 data-bind="text : cart().Name"></h2>
+
+    <form>
+        From:
+        <input type="date" name="from">
+        <br/>
+        To:
+        <input type="date" name="to">
+    </form>
+
+
+    <table class="details ui-widget-content"></table>
+    <button data-bind="click: createReservation"> Create a reservation </button>
+</aside>
+
+
+@*<div id="orders-area" class="content">
+        <!-- List of orders -->
+        <div class="float-left">
+            <h1>Your Orders</h1>
+            <ul id="orders"></ul>
+        </div>
+
+        <div id="order-details" class="float-right">
+            <h2>Order #<span></span></h2>
+            <table class="details ui-widget-content"></table>
+            <p>Total: <span></span></p>
+        </div>
+    </div>*@
+
+@section Scripts {
+    <script type="text/javascript" src="@Url.Content("~/Scripts/knockout-2.2.0.js")"></script>
+    <script type="text/javascript">
+
+    function AppViewModel() {
+        var self = this;
+        self.loggedIn = @(Request.IsAuthenticated ? "true" : "false");
+        self.apartments = ko.observableArray();
+        self.cart = ko.observable({Id:-1,Name:"Choose and apartment"});
+        self.reservations = ko.observableArray();
+        self.details = ko.observable();
+
+
+        @*function ApartmentViewModel() {
+                var self = this;
+                self.id = ko.observable();
+                self.name = ko.observable();
+                self.imageUrl = ko.observable();
+                self.description = ko.observable();
+                self.rating = ko.observable();
+                self.rooms = ko.observable();
+
+                showProgress();
+                $.getJSON('@ViewBag.ApiUri', function (data) {
+                    self.id(data.Id);
+                    self.name(data.Name);
+                    self.imageUrl(data.ImageUrl);
+                    self.description(data.Description);
+                    self.rating(data.Rating);
+                    self.rooms(data.Rooms);
+                    hideProgress();
+                });
+            }*@
+
+            function ApartmentViewModel(root, apartment) {
+                var apself = this;
+                apself.ApartmentId = apartment.Id;
+                apself.Name = apartment.Name;
+                apself.Description = apartment.Description;
+                apself.Rating = apartment.Rating;
+                apself.ImageUrl = apartment.ImageUrl;
+
+                apself.addReservation = function () {
+                    self.cart(apself);
+                };
+
+                apself.removeAllFromCart = function () {
+                    self.cart(null);
+                };
+        }
+
+        function ReservationDetailsViewModel(reservation) {
+            var self = this;
+            self.items = ko.observableArray();
+            self.Id = reservation.Id;
+
+            $.getJSON("/api/reservation/" + reservation.Id, function (reservation) {
+                $.each(order.Details, function (index, item) {
+                    self.items.push(item);
+                })
+            });
+        };
+
+        self.resetCart = function() {
+            var items = self.cart.removeAll();
+            $.each(items, function (index, product) {
+                product.Quantity(0);
+            });
+        }
+
+        self.getDetails = function (order) {
+            self.details(new ReservationDetailsViewModel(order));
+        }
+
+        self.createReservation = function () {
+            if(self.cart().Id!=-1){
+                debugger;
+                var jqxhr = $.ajax({
+                    type: 'POST',
+                    url: "api/reservation",
+                    contentType: 'application/json; charset=utf-8',
+                    data: ko.toJSON({ Details: self.cart }),
+                    dataType: "json",
+                    success: function (newReservation) {
+                        self.resetCart();
+                        self.reservations.push(newReservation);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        self.errorMessage(errorThrown);
+                    }
+                });
+            }
+        };
+
+        $.getJSON("/api/apartments", function (apartments) {
+            $.each(apartments, function (index, apartment) {
+                self.apartments.push(new ApartmentViewModel(self, apartment));
+            })
+        });
+
+        $.getJSON("../api/reservation/", self.orders);
+
+
+    }
+
+    $(document).ready(function () {
+        ko.applyBindings(new AppViewModel());
+    });
+
+    </script>
+}

@@ -1,0 +1,118 @@
+﻿@model IT_project.Models.Apartment
+
+@{
+    ViewBag.Title = "Admin";
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript" src="@Url.Content("~/Scripts/knockout-2.2.0.js")"></script>
+    <script type="text/javascript">
+
+        var spinnerVisible = false;
+        function showProgress() {
+            if (!spinnerVisible) {
+                $("div#spinner").fadeIn("fast");
+                spinnerVisible = true;
+            }
+        };
+        function hideProgress() {
+            if (spinnerVisible) {
+                var spinner = $("div#spinner");
+                spinner.stop();
+                spinner.fadeOut("fast");
+                spinnerVisible = false;
+            }
+        };
+
+        function ApartmentsViewModel() {
+            var self = this;
+            self.apartments = ko.observableArray();
+            //debugger;
+            var baseUri = '@ViewBag.ApiUrl';
+              self.create = function (formElement) {
+                  // If valid, post the serialized form data to the web api
+                  $(formElement).validate();
+                  if ($(formElement).valid()) {
+                      $.post(baseUri, $(formElement).serialize(), null, "json")
+                          .done(function (o) { self.apartments.push(o); });
+                  }
+              }
+                
+
+              self.update = function (apartment) {
+                  showProgress();
+                  $.ajax({ type: "PUT", url: baseUri + '/' + apartment.Id, data: apartment });
+                  hideProgress();
+              }
+
+              self.remove = function (apartment) {
+                  // First remove from the server, then from the UI
+                  showProgress();
+                  $.ajax({ type: "DELETE", url: baseUri + '/' + apartment.Id })
+                      .done(function () { self.apartments.remove(apartment); });
+                  hideProgress();
+              }
+
+              showProgress();
+              $.getJSON(baseUri, self.apartments);
+              hideProgress();
+          }
+
+            $(document).ready(function () {
+                ko.applyBindings(new ApartmentsViewModel());
+            });
+    </script>
+}
+
+<div id="spinner">
+    Loading...
+</div>
+
+
+<h2 id="test">Admin</h2>
+
+<article class="content-wrapper float-left">
+    <h2>Add New Apartment</h2>
+    <form id="addApartment" data-bind="submit: create">
+        @Html.ValidationSummary(true)
+        <fieldset>
+            <legend>Contact</legend>
+            @Html.EditorForModel()
+            <p>
+                <input type="submit" value="Save" />
+            </p>
+        </fieldset>
+    </form>
+</article>
+<aside class="float-left">
+    <ul id="update-apartments" data-bind="foreach: apartments" style="list-style:none">
+        <li class="apartment_box float-left">
+            <div>
+                <div class="item">Name</div>
+                <input type="text" data-bind="value: $data.Name" />
+            </div>
+            <div>
+                <div class="item">Description</div>
+                <input type="text" data-bind="value: $data.Description" />
+            </div>
+            <div>
+                <div class="item">Rating</div>
+                <input type="text" data-bind="value: $data.Rating" />
+            </div>
+            <div>
+                <div class="item">Rooms</div>
+                <input type="text" data-bind="value: $data.Rooms" />
+            </div>
+            <div>
+                <div><img data-bind="attr: {src: $data.ImageUrl}" height="150" width="150" /> </div>
+                <input type="text" data-bind="value: $data.ImageUrl" height="150" width="150" />
+            </div>
+
+            <div>
+                <input type="button" value="Update" data-bind="click: $root.update" />
+                <input type="button" value="Delete Item" data-bind="click: $root.remove" />
+            </div>
+        </li>
+    </ul>
+</aside>
