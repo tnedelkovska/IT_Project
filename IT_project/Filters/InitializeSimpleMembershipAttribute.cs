@@ -41,7 +41,7 @@ namespace IT_project.Filters
 
                     WebSecurity.InitializeDatabaseConnection("DefaultConnection", "UserProfile", "UserId", "UserName", autoCreateTables: true);
                     const string adminRole = "Administrator";
-                    const string adminName = "Administrator";
+                    const string adminName = "Admin";
 
                     if (!Roles.RoleExists(adminRole))
                     {
@@ -49,7 +49,7 @@ namespace IT_project.Filters
                     }
                     if (!WebSecurity.UserExists(adminName))
                     {
-                        WebSecurity.CreateUserAndAccount(adminName, "password");
+                        WebSecurity.CreateUserAndAccount(adminName, "1234");
                         Roles.AddUserToRole(adminName, adminRole);
                     }    
                 }

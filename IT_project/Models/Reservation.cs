@@ -14,8 +14,14 @@ namespace IT_project.Models
         public int Id { get; set; }
         [Required]
         public string Customer { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString ="{0:yyyy-MM-dd}",ApplyFormatInEditMode = true)]
+        public DateTime From { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime To { get; set; }
 
-        // Navigation property
-        public ICollection<ReservationDetail> ReservationDetail { get; set; }
+        public int ApartmentId { get; set; }
+        public virtual Apartment Apartment { get; set; }
     }
 }

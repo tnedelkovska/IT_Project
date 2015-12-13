@@ -769,7 +769,7 @@ tr.pager td {
     color:white;
 }
 
-div#spinner
+div.spinner
 {
     display: none;
     width:100px;

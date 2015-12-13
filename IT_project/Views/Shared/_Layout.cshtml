@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <title>@ViewBag.Title - Apartments Booking</title>
-    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <link href="~/Images/favicon.ico" rel="shortcut icon"/>
     <meta name="viewport" content="width=device-width" />
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
@@ -24,7 +24,10 @@
                 <nav>
                     <ul id="menu">
                         <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                        <li>@Html.ActionLink("Accommodations", "Accommodations", "Home")</li>
+                        @if (Request.IsAuthenticated)
+                        {
+                            <li>@Html.ActionLink("Accommodations", "Accommodations", "Home")</li>
+                        }
                         <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
                         @if (User.IsInRole("Administrator"))
                         {
@@ -64,7 +67,10 @@
 
                     <ul class="footer_menu">
                         <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                        <li>@Html.ActionLink("Accommodations", "Accommodations", "Home")</li>
+                        @if (Request.IsAuthenticated)
+                        {
+                            <li>@Html.ActionLink("Accommodations", "Accommodations", "Home")</li>
+                        }
                         <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
                         @if (User.IsInRole("Administrator"))
                         {

@@ -12,7 +12,7 @@ using IT_project.Models;
 
 namespace IT_project.Controllers
 {
-    //[Authorize(Roles = "Administrator")]
+    [Authorize(Roles = "Administrator")]
     public class AdminController : ApiController
     {
         private ApartmentsContext db = new ApartmentsContext();

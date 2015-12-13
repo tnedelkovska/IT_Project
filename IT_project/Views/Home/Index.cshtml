@@ -4,7 +4,7 @@
 }
 
 
-    <div id="spinner">
+    <div class="spinner">
         Loading...
     </div>
 
@@ -27,8 +27,8 @@
             <ul class="img_list" data-bind="foreach: apartments">
                 <li>
                     <a data-bind="attr: { 'href': '@Url.Action("ApartmentsView", "Home")/aspx?apartmentId='+Id }">
-                        <img data-bind="attr : {src : ImageUrl,alt : Name}" width="110" height="80"/>
                         <p data-bind="text : Name"></p>
+                        <img data-bind="attr : {src : ImageUrl,alt : Name}" style="width:9em;height:8em"/>
                     </a>
 
                 </li>
@@ -93,13 +93,13 @@
         var spinnerVisible = false;
         function showProgress() {
             if (!spinnerVisible) {
-                $("div#spinner").fadeIn("fast");
+                $("div.spinner").fadeIn("fast");
                 spinnerVisible = true;
             }
         };
         function hideProgress() {
             if (spinnerVisible) {
-                var spinner = $("div#spinner");
+                var spinner = $("div.spinner");
                 spinner.stop();
                 spinner.fadeOut("fast");
                 spinnerVisible = false;

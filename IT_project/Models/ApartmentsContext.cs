@@ -20,7 +20,6 @@ namespace IT_project.Models
 
         public DbSet<Apartment> Apartments { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
-        public DbSet<ReservationDetail> ReservationDetails { get; set; }
     }
 
 

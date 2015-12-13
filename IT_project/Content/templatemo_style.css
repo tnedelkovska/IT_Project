@@ -203,8 +203,8 @@ a:hover{
 .img_list li {
 	list-style: none;
 	margin: 0em 0.5em 1em 0em;
-    padding:0.5em;
-    width:8em;
+    padding:1em;
+    width:9em;
 	float: left;
     background-color: #5098b4
 }

@@ -4,87 +4,18 @@
     ViewBag.Title = "Admin";
 }
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-    <script type="text/javascript" src="@Url.Content("~/Scripts/knockout-2.2.0.js")"></script>
-    <script type="text/javascript">
 
-        var spinnerVisible = false;
-        function showProgress() {
-            if (!spinnerVisible) {
-                $("div#spinner").fadeIn("fast");
-                spinnerVisible = true;
-            }
-        };
-        function hideProgress() {
-            if (spinnerVisible) {
-                var spinner = $("div#spinner");
-                spinner.stop();
-                spinner.fadeOut("fast");
-                spinnerVisible = false;
-            }
-        };
-
-        function ApartmentsViewModel() {
-            var self = this;
-            self.apartments = ko.observableArray();
-            //debugger;
-            var baseUri = '@ViewBag.ApiUrl';
-              self.create = function (formElement) {
-                  // If valid, post the serialized form data to the web api
-                  $(formElement).validate();
-                  if ($(formElement).valid()) {
-                      $.post(baseUri, $(formElement).serialize(), null, "json")
-                          .done(function (o) { self.apartments.push(o); });
-                  }
-              }
-                
-
-              self.update = function (apartment) {
-                  showProgress();
-                  $.ajax({ type: "PUT", url: baseUri + '/' + apartment.Id, data: apartment });
-                  hideProgress();
-              }
-
-              self.remove = function (apartment) {
-                  // First remove from the server, then from the UI
-                  showProgress();
-                  $.ajax({ type: "DELETE", url: baseUri + '/' + apartment.Id })
-                      .done(function () { self.apartments.remove(apartment); });
-                  hideProgress();
-              }
-
-              showProgress();
-              $.getJSON(baseUri, self.apartments);
-              hideProgress();
-          }
-
-            $(document).ready(function () {
-                ko.applyBindings(new ApartmentsViewModel());
-            });
-    </script>
-}
-
-<div id="spinner">
+<div class="spinner">
     Loading...
 </div>
 
 
-<h2 id="test">Admin</h2>
+<div style="width:100%;background-color:#004f83;margin-bottom:2em;padding:1em" class="float-left">
+    <h1 class="float-left">@ViewBag.Title</h1>
+    <button class="float-right" onclick="goBack()">Go Back</button>
+</div>
 
-<article class="content-wrapper float-left">
-    <h2>Add New Apartment</h2>
-    <form id="addApartment" data-bind="submit: create">
-        @Html.ValidationSummary(true)
-        <fieldset>
-            <legend>Contact</legend>
-            @Html.EditorForModel()
-            <p>
-                <input type="submit" value="Save" />
-            </p>
-        </fieldset>
-    </form>
-</article>
+
 <aside class="float-left">
     <ul id="update-apartments" data-bind="foreach: apartments" style="list-style:none">
         <li class="apartment_box float-left">
@@ -116,3 +47,83 @@
         </li>
     </ul>
 </aside>
+
+<aside class="content-wrapper float-right">
+    <h2>Add New Apartment</h2>
+    <form id="addApartment" data-bind="submit: create">
+        @Html.ValidationSummary(true)
+        <fieldset>
+            <legend>Contact</legend>
+            @Html.EditorForModel()
+            <p>
+                <input type="submit" value="Save" />
+            </p>
+        </fieldset>
+    </form>
+</aside>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript" src="@Url.Content("~/Scripts/knockout-2.2.0.js")"></script>
+    <script type="text/javascript">
+
+        function goBack() {
+            window.history.back();
+        }
+
+        var spinnerVisible = false;
+        function showProgress() {
+            if (!spinnerVisible) {
+                $("div.spinner").fadeIn("fast");
+                spinnerVisible = true;
+            }
+        };
+        function hideProgress() {
+            if (spinnerVisible) {
+                var spinner = $("div.spinner");
+                spinner.stop();
+                spinner.fadeOut("fast");
+                spinnerVisible = false;
+            }
+        };
+
+        function ApartmentsViewModel() {
+            var self = this;
+            self.apartments = ko.observableArray();
+            //debugger;
+            var baseUri = '@ViewBag.ApiUrl';
+            self.create = function (formElement) {
+                // If valid, post the serialized form data to the web api
+                $(formElement).validate();
+                if ($(formElement).valid()) {
+                    $.post(baseUri, $(formElement).serialize(), null, "json")
+                        .done(function (o) { self.apartments.push(o); });
+                }
+            }
+
+
+            self.update = function (apartment) {
+                showProgress();
+                $.ajax({ type: "PUT", url: baseUri + '/' + apartment.Id, data: apartment });
+                hideProgress();
+            }
+
+            self.remove = function (apartment) {
+                // First remove from the server, then from the UI
+                showProgress();
+                $.ajax({ type: "DELETE", url: baseUri + '/' + apartment.Id })
+                    .done(function () { self.apartments.remove(apartment); });
+                hideProgress();
+            }
+
+            showProgress();
+            $.getJSON(baseUri, self.apartments);
+            hideProgress();
+        }
+
+        $(document).ready(function () {
+            ko.applyBindings(new ApartmentsViewModel());
+        });
+    </script>
+}
